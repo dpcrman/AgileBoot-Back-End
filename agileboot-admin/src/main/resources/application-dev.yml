@@ -2,7 +2,7 @@
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
-        driverClassName: com.mysql.cj.jdbc.Driver
+        driverClassName: org.postgresql.Driver
         druid:
             webStatFilter:
                 enabled: true
@@ -43,16 +43,16 @@ spring:
                 # 配置一个连接在池中最大生存的时间，单位是毫秒
                 maxEvictableIdleTimeMillis: 900000
                 # 配置检测连接是否有效
-                validationQuery: SELECT 1 FROM DUAL
+                validationQuery: SELECT 1
                 testWhileIdle: true
                 testOnBorrow: false
                 testOnReturn: false
             datasource:
                 # 主库数据源
                 master:
-                    url: jdbc:mysql://localhost:33067/agileboot-pure?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                    username: root
-                    password: 12345
+                    url: jdbc:postgresql://192.168.31.221:5432/agileboot?currentSchema=app&stringtype=unspecified
+                    username: postgres
+                    password: asd123456@
                 # 从库数据源
 #                slave:
 #                    url: jdbc:mysql://localhost:33067/agileboot2?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
@@ -62,13 +62,13 @@ spring:
     # redis 配置
     redis:
         # 地址
-        host: localhost
+        host: 192.168.31.221
         # 端口，默认为6379
-        port: 36379
+        port: 6379
         # 数据库索引
-        database: 0
+        database: 1
         # 密码
-        password: 12345
+        password: uG3dB1aF0eD3mF2bE1bC
         # 连接超时时间
         timeout: 10s
         lettuce:

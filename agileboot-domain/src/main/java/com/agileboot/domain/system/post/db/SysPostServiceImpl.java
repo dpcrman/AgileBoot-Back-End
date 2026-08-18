@@ -2,7 +2,7 @@ package com.agileboot.domain.system.post.db;
 
 import com.agileboot.domain.system.user.db.SysUserEntity;
 import com.agileboot.domain.system.user.db.SysUserMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,25 +29,25 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
      */
     @Override
     public boolean isPostNameDuplicated(Long postId, String postName) {
-        QueryWrapper<SysPostEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(postId != null, "post_id", postId)
-            .eq("post_name", postName);
+        LambdaQueryWrapper<SysPostEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(postId != null, SysPostEntity::getPostId, postId)
+            .eq(SysPostEntity::getPostName, postName);
         return baseMapper.exists(queryWrapper);
     }
 
     @Override
     public boolean isPostCodeDuplicated(Long postId, String postCode) {
-        QueryWrapper<SysPostEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(postId != null, "post_id", postId)
-            .eq("post_code", postCode);
+        LambdaQueryWrapper<SysPostEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(postId != null, SysPostEntity::getPostId, postId)
+            .eq(SysPostEntity::getPostCode, postCode);
         return baseMapper.exists(queryWrapper);
     }
 
 
     @Override
     public boolean isAssignedToUsers(Long postId) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("post_id", postId);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserEntity::getPostId, postId);
         return userMapper.exists(queryWrapper);
     }
 

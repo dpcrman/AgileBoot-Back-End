@@ -3,7 +3,7 @@ package com.agileboot.domain.system.user.db;
 import com.agileboot.common.core.page.AbstractPageQuery;
 import com.agileboot.domain.system.post.db.SysPostEntity;
 import com.agileboot.domain.system.role.db.SysRoleEntity;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
@@ -24,26 +24,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
 
     @Override
     public boolean isUserNameDuplicated(String username) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserEntity::getUsername, username);
         return this.baseMapper.exists(queryWrapper);
     }
 
 
     @Override
     public boolean isPhoneDuplicated(String phone, Long userId) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(userId != null, "user_id", userId)
-            .eq("phone_number", phone);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(userId != null, SysUserEntity::getUserId, userId)
+            .eq(SysUserEntity::getPhoneNumber, phone);
         return baseMapper.exists(queryWrapper);
     }
 
 
     @Override
     public boolean isEmailDuplicated(String email, Long userId) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(userId != null, "user_id", userId)
-            .eq("email", email);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(userId != null, SysUserEntity::getUserId, userId)
+            .eq(SysUserEntity::getEmail, email);
         return baseMapper.exists(queryWrapper);
     }
 
@@ -70,8 +70,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
 
     @Override
     public SysUserEntity getUserByUserName(String userName) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userName);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserEntity::getUsername, userName);
         return this.getOne(queryWrapper);
     }
 

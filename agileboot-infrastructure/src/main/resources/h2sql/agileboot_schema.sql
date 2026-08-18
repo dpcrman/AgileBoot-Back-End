@@ -1,4 +1,6 @@
 
+DROP ALL OBJECTS;
+
 --- int后面不能带数字， 索引相关的语句也不允许， 保留最简单原始的语句即可
 create sequence if not exists sys_config_seq start with 6 increment by 1;
 create table sys_config

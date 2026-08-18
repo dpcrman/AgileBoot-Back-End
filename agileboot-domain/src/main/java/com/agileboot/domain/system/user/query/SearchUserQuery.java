@@ -32,8 +32,8 @@ public class SearchUserQuery<T> extends AbstractPageQuery<T> {
             .and(deptId != null, o ->
                 o.eq("u.dept_id", deptId)
                     .or()
-                    .apply("u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(" + deptId
-                        + ", ancestors))"));
+                    .apply("u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE " + deptId
+                        + " = ANY(string_to_array(t.ancestors, ',')::bigint[]))"));
 
         // 设置排序字段
         this.timeRangeColumn = "u.create_time";

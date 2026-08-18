@@ -110,7 +110,7 @@ mybatis-plus:
 
 # PageHelper分页插件
 pagehelper:
-  helperDialect: mysql
+  helperDialect: postgresql
   supportMethodsArguments: true
   params: count=countSql
 

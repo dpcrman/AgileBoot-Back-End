@@ -2,7 +2,7 @@ package com.agileboot.domain.system.dept.db;
 
 import com.agileboot.domain.system.user.db.SysUserEntity;
 import com.agileboot.domain.system.user.db.SysUserMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
     @Override
     public boolean isDeptNameDuplicated(String deptName, Long deptId, Long parentId) {
-        QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dept_name", deptName)
-            .ne(deptId != null, "dept_id", deptId)
-            .eq(parentId != null, "parent_id", parentId);
+        LambdaQueryWrapper<SysDeptEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysDeptEntity::getDeptName, deptName)
+            .ne(deptId != null, SysDeptEntity::getDeptId, deptId)
+            .eq(parentId != null, SysDeptEntity::getParentId, parentId);
 
         return this.baseMapper.exists(queryWrapper);
     }
@@ -35,27 +35,21 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
     @Override
     public boolean hasChildrenDept(Long deptId, Boolean enabled) {
-        QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(enabled != null, "status", 1)
-            .and(o -> o.eq("parent_id", deptId).or()
-                .apply("FIND_IN_SET (" + deptId + " , ancestors)")
-            );
-        return this.baseMapper.exists(queryWrapper);
+        Integer status = Boolean.TRUE.equals(enabled) ? 1 : null;
+        return this.baseMapper.hasChildrenDept(deptId, status);
     }
 
 
     @Override
     public boolean isChildOfTheDept(Long parentId, Long childId) {
-        QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.apply("dept_id = '" + childId + "' and FIND_IN_SET ( " + parentId + " , ancestors)");
-        return this.baseMapper.exists(queryWrapper);
+        return this.baseMapper.isChildOfTheDept(parentId, childId);
     }
 
 
     @Override
     public boolean isDeptAssignedToUsers(Long deptId) {
-        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dept_id", deptId);
+        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserEntity::getDeptId, deptId);
         return userMapper.exists(queryWrapper);
     }
 

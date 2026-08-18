@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -24,10 +23,6 @@ public interface SysNoticeMapper extends BaseMapper<SysNoticeEntity> {
      * @param queryWrapper 条件选择器
      * @return 分页处理后的公告列表
      */
-    @Select("SELECT n.* "
-        + "FROM sys_notice n "
-        + "LEFT JOIN sys_user u ON n.creator_id = u.user_id"
-        + " ${ew.customSqlSegment}")
     Page<SysNoticeEntity> getNoticeList(Page<SysNoticeEntity> page,
         @Param(Constants.WRAPPER) Wrapper<SysNoticeEntity> queryWrapper);
 

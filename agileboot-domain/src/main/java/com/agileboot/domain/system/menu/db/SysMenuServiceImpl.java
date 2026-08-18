@@ -2,7 +2,7 @@ package com.agileboot.domain.system.menu.db;
 
 import com.agileboot.domain.system.role.db.SysRoleMenuEntity;
 import com.agileboot.domain.system.role.db.SysRoleMenuMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,18 +36,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuEntity
 
     @Override
     public boolean isMenuNameDuplicated(String menuName, Long menuId, Long parentId) {
-        QueryWrapper<SysMenuEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("menu_name", menuName)
-            .ne(menuId != null, "menu_id", menuId)
-            .eq(parentId != null, "parent_id", parentId);
+        LambdaQueryWrapper<SysMenuEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysMenuEntity::getMenuName, menuName)
+            .ne(menuId != null, SysMenuEntity::getMenuId, menuId)
+            .eq(parentId != null, SysMenuEntity::getParentId, parentId);
         return this.baseMapper.exists(queryWrapper);
     }
 
 
     @Override
     public boolean hasChildrenMenu(Long menuId) {
-        QueryWrapper<SysMenuEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent_id", menuId);
+        LambdaQueryWrapper<SysMenuEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysMenuEntity::getParentId, menuId);
         return baseMapper.exists(queryWrapper);
     }
 
@@ -59,8 +59,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuEntity
      */
     @Override
     public boolean isMenuAssignToRoles(Long menuId) {
-        QueryWrapper<SysRoleMenuEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("menu_id", menuId);
+        LambdaQueryWrapper<SysRoleMenuEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenuEntity::getMenuId, menuId);
         return roleMenuMapper.exists(queryWrapper);
     }
 
