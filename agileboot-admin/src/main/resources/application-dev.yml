@@ -85,7 +85,7 @@ spring:
 
 logging:
     file:
-        path: D:/logs/agileboot-dev
+        path: ./logs
 
 
 springdoc:

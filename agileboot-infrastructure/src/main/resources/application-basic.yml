@@ -41,6 +41,8 @@ agileboot:
 
 # 日志配置
 logging:
+  file:
+    path: ./logs
   level:
     # 记得配置到包名
     com.agileboot: debug

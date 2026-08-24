@@ -2,7 +2,7 @@
 <configuration>
 
   <!-- 日志存放路径 在xml文件夹中 -->
-  <springProperty name="log.path" source="logging.file.path"/>
+  <springProperty name="log.path" source="logging.file.path" defaultValue="./logs"/>
 
   <springProperty name="console.pattern" source="logging.pattern.console"/>
 
