@@ -34,14 +34,14 @@ class MenuModelTest {
     @Test
     void testCheckExternalLinkWhenSuccessful() {
         MenuModel notExternalButWithoutHttpPrefix = new MenuModel();
-//        notExternalButWithoutHttpPrefix.setIsExternal(false);
+        notExternalButWithoutHttpPrefix.setMenuType(com.agileboot.common.enums.common.MenuTypeEnum.MENU.getValue());
         notExternalButWithoutHttpPrefix.setPath("www.baidu.com");
 
         MenuModel isExternalWithHttpPrefix = new MenuModel();
-//        isExternalWithHttpPrefix.setIsExternal(true);
+        isExternalWithHttpPrefix.setMenuType(com.agileboot.common.enums.common.MenuTypeEnum.OUTSIDE_LINK_REDIRECT.getValue());
         isExternalWithHttpPrefix.setPath("http://www.baidu.com");
 
-        Assertions.assertDoesNotThrow(()->{
+        Assertions.assertDoesNotThrow(() -> {
             notExternalButWithoutHttpPrefix.checkExternalLink();
             isExternalWithHttpPrefix.checkExternalLink();
         });
@@ -50,7 +50,7 @@ class MenuModelTest {
     @Test
     void testCheckExternalLinkWhenFailed() {
         MenuModel externalWithoutHttpPrefix = new MenuModel();
-//        externalWithoutHttpPrefix.setIsExternal(true);
+        externalWithoutHttpPrefix.setMenuType(com.agileboot.common.enums.common.MenuTypeEnum.OUTSIDE_LINK_REDIRECT.getValue());
         externalWithoutHttpPrefix.setPath("www.baidu.com");
 
         ApiException exception = assertThrows(ApiException.class, externalWithoutHttpPrefix::checkExternalLink);

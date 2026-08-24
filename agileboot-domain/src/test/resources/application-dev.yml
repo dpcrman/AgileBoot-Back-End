@@ -43,15 +43,16 @@ spring:
                     password: asd123456@
 
     # redis 配置
-    redis:
-        host: 192.168.31.221
-        port: 6379
-        database: 1
-        password: uG3dB1aF0eD3mF2bE1bC
-        timeout: 10s
-        lettuce:
-            pool:
-                min-idle: 0
-                max-idle: 8
-                max-active: 8
-                max-wait: -1ms
+    data:
+        redis:
+            host: 192.168.31.221
+            port: 6379
+            database: 1
+            password: uG3dB1aF0eD3mF2bE1bC
+            timeout: 10s
+            lettuce:
+                pool:
+                    min-idle: 0
+                    max-idle: 8
+                    max-active: 8
+                    max-wait: -1ms

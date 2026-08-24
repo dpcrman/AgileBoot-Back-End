@@ -6,8 +6,8 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -72,6 +72,32 @@ public class ServletHolderUtil {
         return strip + contextPath;
     }
 
+    /**
+     * 获取客户端IP
+     */
+    public static String getClientIP(HttpServletRequest request) {
+        if (request == null) {
+            return "unknown";
+        }
+        String[] headers = {
+            "X-Forwarded-For",
+            "X-Real-IP",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_X_FORWARDED_FOR"
+        };
+        for (String header : headers) {
+            String ip = request.getHeader(header);
+            if (StrUtil.isNotEmpty(ip) && !"unknown".equalsIgnoreCase(ip)) {
+                return StrUtil.split(ip, ',').get(0).trim();
+            }
+        }
+        return request.getRemoteAddr();
+    }
 
+    public static String getClientIP() {
+        return getClientIP(getRequest());
+    }
 
 }

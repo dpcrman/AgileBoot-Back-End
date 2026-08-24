@@ -9,14 +9,16 @@ import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.common.cache.RedisCacheService;
 import com.agileboot.infrastructure.user.web.SystemLoginUser;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
+import javax.crypto.SecretKey;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,15 @@ public class TokenService {
 
     private final RedisCacheService redisCache;
 
+    private SecretKey getSecretKey() {
+        try {
+            byte[] keyBytes = MessageDigest.getInstance("SHA-512").digest(secret.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Failed to generate secret key", e);
+        }
+    }
+
     /**
      * 获取用户身份信息
      *
@@ -71,7 +82,7 @@ public class TokenService {
                 String uuid = (String) claims.get(Token.LOGIN_USER_KEY);
 
                 return redisCache.loginUserCache.getObjectOnlyInCacheById(uuid);
-            } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException jwtException) {
+            } catch (JwtException | IllegalArgumentException jwtException) {
                 log.error("parse token failed.", jwtException);
                 throw new ApiException(jwtException, ErrorCode.Client.INVALID_TOKEN);
             } catch (Exception e) {
@@ -110,7 +121,6 @@ public class TokenService {
         }
     }
 
-
     /**
      * 从数据声明生成令牌
      *
@@ -119,8 +129,9 @@ public class TokenService {
      */
     private String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS512, secret).compact();
+            .claims(claims)
+            .signWith(getSecretKey())
+            .compact();
     }
 
     /**
@@ -131,9 +142,10 @@ public class TokenService {
      */
     private Claims parseToken(String token) {
         return Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .getBody();
+            .verifyWith(getSecretKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
     }
 
     /**

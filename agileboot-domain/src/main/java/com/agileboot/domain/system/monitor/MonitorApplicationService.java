@@ -35,7 +35,7 @@ public class MonitorApplicationService {
     public RedisCacheInfoDTO getRedisCacheInfo() {
         Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) RedisServerCommands::info);
         Properties commandStats = (Properties) redisTemplate.execute(
-            (RedisCallback<Object>) connection -> connection.info("commandstats"));
+                (RedisCallback<Object>) connection -> connection.info("commandstats"));
         Long dbSize = redisTemplate.execute(RedisServerCommands::dbSize);
 
         if (commandStats == null || info == null) {
@@ -64,16 +64,14 @@ public class MonitorApplicationService {
     public List<OnlineUserDTO> getOnlineUserList(String username, String ipAddress) {
         Collection<String> keys = redisTemplate.keys(CacheKeyEnum.LOGIN_USER_KEY.key() + "*");
 
-        Stream<OnlineUserDTO> onlineUserStream = keys.stream().map(o ->
-                    CacheCenter.loginUserCache.getObjectOnlyInCacheByKey(o))
-            .filter(Objects::nonNull).map(OnlineUserDTO::new);
+        Stream<OnlineUserDTO> onlineUserStream = keys.stream()
+                .map(o -> CacheCenter.loginUserCache.getObjectOnlyInCacheByKey(o))
+                .filter(Objects::nonNull).map(OnlineUserDTO::new);
 
         List<OnlineUserDTO> filteredOnlineUsers = onlineUserStream
-            .filter(o ->
-                StrUtil.isEmpty(username) || username.equals(o.getUsername())
-            ).filter( o ->
-                StrUtil.isEmpty(ipAddress) || ipAddress.equals(o.getIpAddress())
-            ).collect(Collectors.toList());
+                .filter(o -> StrUtil.isEmpty(username) || username.equals(o.getUsername()))
+                .filter(o -> StrUtil.isEmpty(ipAddress) || ipAddress.equals(o.getIpAddress()))
+                .collect(Collectors.toList());
 
         Collections.reverse(filteredOnlineUsers);
         return filteredOnlineUsers;
@@ -82,6 +80,5 @@ public class MonitorApplicationService {
     public ServerInfo getServerInfo() {
         return ServerInfo.fillInfo();
     }
-
 
 }

@@ -52,7 +52,7 @@ class DeptModelTest {
     void testCheckHasChildDept() {
         DeptModel deptModel = deptModelFactory.create();
         deptModel.setDeptId(DEPT_ID);
-        when(deptService.hasChildrenDept((DEPT_ID), eq(null))).thenReturn(true);
+        when(deptService.hasChildrenDept(DEPT_ID, null)).thenReturn(true);
 
         ApiException exception = assertThrows(ApiException.class, deptModel::checkHasChildDept);
 

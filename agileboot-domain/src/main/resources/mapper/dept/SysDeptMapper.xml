@@ -11,7 +11,7 @@
         </if>
         AND (
             parent_id = #{deptId}
-            OR #{deptId} = ANY(string_to_array(ancestors, ',')::bigint[])
+            OR find_in_set(#{deptId}, ancestors)
         )
     </select>
 
@@ -20,7 +20,7 @@
         FROM sys_dept
         WHERE deleted = 0
           AND dept_id = #{childId}
-          AND #{parentId} = ANY(string_to_array(ancestors, ',')::bigint[])
+          AND find_in_set(#{parentId}, ancestors)
     </select>
 
 </mapper>

@@ -86,9 +86,10 @@ public class MenuModel extends SysMenuEntity {
 
 
     public void checkExternalLink() {
-//        if (getIsExternal() && !HttpUtil.isHttp(getPath()) && !HttpUtil.isHttps(getPath())) {
-//            throw new ApiException(ErrorCode.Business.MENU_EXTERNAL_LINK_MUST_BE_HTTP);
-//        }
+        if (Objects.equals(getMenuType(), MenuTypeEnum.OUTSIDE_LINK_REDIRECT.getValue())
+            && !cn.hutool.http.HttpUtil.isHttp(getPath()) && !cn.hutool.http.HttpUtil.isHttps(getPath())) {
+            throw new ApiException(ErrorCode.Business.MENU_EXTERNAL_LINK_MUST_BE_HTTP);
+        }
     }
 
 

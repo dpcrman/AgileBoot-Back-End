@@ -1,5 +1,7 @@
 package com.agileboot.admin.customize.service.login;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
@@ -9,7 +11,6 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants.Captcha;
 import com.agileboot.common.exception.ApiException;
@@ -21,6 +22,7 @@ import com.agileboot.domain.common.cache.GuavaCacheService;
 import com.agileboot.domain.common.cache.MapCache;
 import com.agileboot.domain.common.cache.RedisCacheService;
 import com.agileboot.admin.customize.async.AsyncTaskFactory;
+import com.agileboot.infrastructure.config.captcha.CaptchaMathTextCreator;
 import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.admin.customize.service.login.dto.CaptchaDTO;
 import com.agileboot.admin.customize.service.login.dto.ConfigDTO;
@@ -29,9 +31,7 @@ import com.agileboot.infrastructure.user.web.SystemLoginUser;
 import com.agileboot.common.enums.common.ConfigKeyEnum;
 import com.agileboot.common.enums.common.LoginStatusEnum;
 import com.agileboot.domain.system.user.db.SysUserEntity;
-import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
-import javax.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,12 +60,6 @@ public class LoginService {
     private final GuavaCacheService guavaCache;
 
     private final AuthenticationManager authenticationManager;
-
-    @Resource(name = "captchaProducer")
-    private Producer captchaProducer;
-
-    @Resource(name = "captchaProducerMath")
-    private Producer captchaProducerMath;
 
     /**
      * 登录验证
@@ -138,16 +132,19 @@ public class LoginService {
             // 生成验证码
             String captchaType = AgileBootConfig.getCaptchaType();
             if (Captcha.MATH_TYPE.equals(captchaType)) {
-                String capText = captchaProducerMath.createText();
+                CaptchaMathTextCreator captchaMathTextCreator = new CaptchaMathTextCreator();
+                String capText = captchaMathTextCreator.getText();
                 String[] expressionAndAnswer = capText.split("@");
                 expression = expressionAndAnswer[0];
                 answer = expressionAndAnswer[1];
-                image = captchaProducerMath.createImage(expression);
-            }
-
-            if (Captcha.CHAR_TYPE.equals(captchaType)) {
-                expression = answer = captchaProducer.createText();
-                image = captchaProducer.createImage(expression);
+                LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(160, 60);
+                lineCaptcha.createImage(expression);
+                image = (BufferedImage) lineCaptcha.getImage();
+            } else {
+                LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(160, 60, 4, 10);
+                lineCaptcha.createCode();
+                expression = answer = lineCaptcha.getCode();
+                image = (BufferedImage) lineCaptcha.getImage();
             }
 
             if (image == null) {
@@ -203,7 +200,7 @@ public class LoginService {
 
         SysUserEntity entity = redisCache.userCache.getObjectById(loginUser.getUserId());
 
-        entity.setLoginIp(ServletUtil.getClientIP(ServletHolderUtil.getRequest()));
+        entity.setLoginIp(ServletHolderUtil.getClientIP());
         entity.setLoginDate(DateUtil.date());
         entity.updateById();
     }

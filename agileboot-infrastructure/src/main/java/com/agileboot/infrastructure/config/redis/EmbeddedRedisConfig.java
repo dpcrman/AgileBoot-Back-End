@@ -1,7 +1,7 @@
 package com.agileboot.infrastructure.config.redis;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import redis.embedded.RedisServer;
 @ConditionalOnExpression("'${agileboot.embedded.redis}' == 'true'")
 public class EmbeddedRedisConfig {
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port:${spring.redis.port:6379}}")
     private Integer port;
 
     private RedisServer redisServer;

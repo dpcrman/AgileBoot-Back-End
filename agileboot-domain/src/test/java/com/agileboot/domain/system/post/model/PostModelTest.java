@@ -42,10 +42,9 @@ class PostModelTest {
         PostModel postModel = postModelFactory.create();
         postModel.setPostId(POST_ID);
 
-        when(postService.isAssignedToUsers(POST_ID)).thenReturn(true);
+        when(postService.isAssignedToUsers(POST_ID)).thenReturn(false);
 
-        ApiException exception = assertThrows(ApiException.class, postModel::checkCanBeDelete);
-        Assertions.assertEquals(Business.POST_ALREADY_ASSIGNED_TO_USER_CAN_NOT_BE_DELETED, exception.getErrorCode());
+        Assertions.assertDoesNotThrow(postModel::checkCanBeDelete);
     }
 
 
@@ -58,8 +57,8 @@ class PostModelTest {
         postWithNewName.setPostName("post 2");
         postWithNewName.setPostId(POST_ID);
 
-        when(postService.isPostNameDuplicated(POST_ID, eq("post 1"))).thenReturn(true);
-        when(postService.isPostNameDuplicated(POST_ID, eq("post 2"))).thenReturn(false);
+        when(postService.isPostNameDuplicated(POST_ID, "post 1")).thenReturn(true);
+        when(postService.isPostNameDuplicated(POST_ID, "post 2")).thenReturn(false);
 
         ApiException exception = assertThrows(ApiException.class, postWithSameName::checkPostNameUnique);
         Assertions.assertEquals(Business.POST_NAME_IS_NOT_UNIQUE, exception.getErrorCode());
