@@ -159,4 +159,54 @@ public class ControllerValidationIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value(ErrorCode.Client.COMMON_REQUEST_PARAMETERS_INVALID.code()));
     }
+
+    @Test
+    @DisplayName("SysMenuController: 修改菜单Body不含menuId时应正常通过参数校验")
+    void testEditMenuWithoutMenuIdInBody() throws Exception {
+        mockMvcMenu.perform(put("/system/menus/4")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentId\":0,\"menuName\":\"AgileBoot官网\",\"isButton\":false}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(ErrorCode.SUCCESS.code()));
+    }
+
+    @Test
+    @DisplayName("SysDeptController: 修改部门Body不含deptId时应正常通过参数校验")
+    void testEditDeptWithoutDeptIdInBody() throws Exception {
+        mockMvcDept.perform(put("/system/dept/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentId\":0,\"deptName\":\"研发部\",\"orderNum\":1}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(ErrorCode.SUCCESS.code()));
+    }
+
+    @Test
+    @DisplayName("SysConfigController: 修改配置Body不含configId时应正常通过参数校验")
+    void testEditConfigWithoutConfigIdInBody() throws Exception {
+        mockMvcConfig.perform(put("/system/config/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"configValue\":\"true\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(ErrorCode.SUCCESS.code()));
+    }
+
+    @Test
+    @DisplayName("SysNoticeController: 修改公告Body不含noticeId时应正常通过参数校验")
+    void testEditNoticeWithoutNoticeIdInBody() throws Exception {
+        mockMvcNotice.perform(put("/system/notices/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"noticeTitle\":\"系统公告\",\"noticeType\":1,\"noticeContent\":\"公告内容\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(ErrorCode.SUCCESS.code()));
+    }
+
+    @Test
+    @DisplayName("SysUserController: 修改用户Body不含userId时应正常通过参数校验")
+    void testEditUserWithoutUserIdInBody() throws Exception {
+        mockMvcUser.perform(put("/system/users/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"deptId\":1,\"username\":\"admin\",\"nickname\":\"管理员\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(ErrorCode.SUCCESS.code()));
+    }
 }

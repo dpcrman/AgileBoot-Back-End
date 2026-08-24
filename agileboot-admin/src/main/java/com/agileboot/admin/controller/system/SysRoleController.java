@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -118,7 +119,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@permission.has('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{roleId}/dataScope")
-    public ResponseDTO<Void> dataScope(@PathVariable("roleId") Long roleId,
+    public ResponseDTO<Void> dataScope(@PathVariable("roleId") @NotNull @Positive Long roleId,
         @Validated @RequestBody UpdateDataScopeCommand command) {
         command.setRoleId(roleId);
 
@@ -133,7 +134,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@permission.has('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{roleId}/status")
-    public ResponseDTO<Void> changeStatus(@PathVariable("roleId") Long roleId,
+    public ResponseDTO<Void> changeStatus(@PathVariable("roleId") @NotNull @Positive Long roleId,
         @Validated @RequestBody UpdateStatusCommand command) {
         command.setRoleId(roleId);
 

@@ -70,13 +70,13 @@ public class CommandValidationTest {
     }
 
     @Test
-    @DisplayName("UpdateUserCommand: 缺少userId应被拦截")
+    @DisplayName("UpdateUserCommand: 非法userId应被拦截")
     void testUpdateUserCommandValidation() {
         UpdateUserCommand command = new UpdateUserCommand();
         command.setDeptId(1L);
         command.setUsername("admin");
         command.setNickname("管理员");
-        command.setUserId(null);
+        command.setUserId(-1L);
 
         Set<ConstraintViolation<UpdateUserCommand>> violations = validator.validate(command);
         Assertions.assertTrue(violations.stream().anyMatch(v -> "userId".equals(v.getPropertyPath().toString())));
@@ -93,11 +93,13 @@ public class CommandValidationTest {
         Set<ConstraintViolation<ResetPasswordCommand>> violations = validator.validate(command);
         Assertions.assertFalse(violations.isEmpty());
 
-        command.setUserId(1L);
+        command.setUserId(-1L);
         command.setPassword("short"); // 长度小于6
         violations = validator.validate(command);
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "userId".equals(v.getPropertyPath().toString())));
         Assertions.assertTrue(violations.stream().anyMatch(v -> "password".equals(v.getPropertyPath().toString())));
 
+        command.setUserId(1L);
         command.setPassword("123456");
         violations = validator.validate(command);
         Assertions.assertTrue(violations.isEmpty());
@@ -110,8 +112,12 @@ public class CommandValidationTest {
         Set<ConstraintViolation<ChangeStatusCommand>> violations = validator.validate(command);
         Assertions.assertFalse(violations.isEmpty());
 
-        command.setUserId(1L);
+        command.setUserId(-1L);
         command.setStatus("1");
+        violations = validator.validate(command);
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "userId".equals(v.getPropertyPath().toString())));
+
+        command.setUserId(1L);
         violations = validator.validate(command);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -123,12 +129,14 @@ public class CommandValidationTest {
         Set<ConstraintViolation<UpdateProfileCommand>> violations = validator.validate(command);
         Assertions.assertFalse(violations.isEmpty());
 
-        command.setUserId(1L);
+        command.setUserId(-1L);
         command.setNickName("张三");
         command.setEmail("not-email");
         violations = validator.validate(command);
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "userId".equals(v.getPropertyPath().toString())));
         Assertions.assertTrue(violations.stream().anyMatch(v -> "email".equals(v.getPropertyPath().toString())));
 
+        command.setUserId(1L);
         command.setEmail("zhangsan@example.com");
         violations = validator.validate(command);
         Assertions.assertTrue(violations.isEmpty());
@@ -141,8 +149,14 @@ public class CommandValidationTest {
         Set<ConstraintViolation<UpdateUserPasswordCommand>> violations = validator.validate(command);
         Assertions.assertFalse(violations.isEmpty());
 
-        command.setUserId(1L);
+        command.setUserId(-1L);
         command.setOldPassword("oldPass123");
+        command.setNewPassword("short");
+        violations = validator.validate(command);
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "userId".equals(v.getPropertyPath().toString())));
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "newPassword".equals(v.getPropertyPath().toString())));
+
+        command.setUserId(1L);
         command.setNewPassword("newPass123");
         violations = validator.validate(command);
         Assertions.assertTrue(violations.isEmpty());
@@ -197,7 +211,7 @@ public class CommandValidationTest {
         updateCommand.setDeptName("研发部");
         updateCommand.setParentId(0L);
         updateCommand.setOrderNum(1);
-        updateCommand.setDeptId(null);
+        updateCommand.setDeptId(-1L);
         Set<ConstraintViolation<UpdateDeptCommand>> updateViolations = validator.validate(updateCommand);
         Assertions.assertTrue(updateViolations.stream().anyMatch(v -> "deptId".equals(v.getPropertyPath().toString())));
 
@@ -239,21 +253,27 @@ public class CommandValidationTest {
 
         UpdateStatusCommand statusCommand = new UpdateStatusCommand();
         Set<ConstraintViolation<UpdateStatusCommand>> statusViolations = validator.validate(statusCommand);
+        Assertions.assertFalse(statusViolations.isEmpty());
+
+        statusCommand.setRoleId(-1L);
+        statusCommand.setStatus(1);
+        statusViolations = validator.validate(statusCommand);
         Assertions.assertTrue(statusViolations.stream().anyMatch(v -> "roleId".equals(v.getPropertyPath().toString())));
-        Assertions.assertTrue(statusViolations.stream().anyMatch(v -> "status".equals(v.getPropertyPath().toString())));
 
         statusCommand.setRoleId(1L);
-        statusCommand.setStatus(1);
         statusViolations = validator.validate(statusCommand);
         Assertions.assertTrue(statusViolations.isEmpty());
 
         UpdateDataScopeCommand dataScopeCommand = new UpdateDataScopeCommand();
         Set<ConstraintViolation<UpdateDataScopeCommand>> scopeViolations = validator.validate(dataScopeCommand);
+        Assertions.assertFalse(scopeViolations.isEmpty());
+
+        dataScopeCommand.setRoleId(-1L);
+        dataScopeCommand.setDeptIds(List.of(1L));
+        scopeViolations = validator.validate(dataScopeCommand);
         Assertions.assertTrue(scopeViolations.stream().anyMatch(v -> "roleId".equals(v.getPropertyPath().toString())));
-        Assertions.assertTrue(scopeViolations.stream().anyMatch(v -> "deptIds".equals(v.getPropertyPath().toString())));
 
         dataScopeCommand.setRoleId(1L);
-        dataScopeCommand.setDeptIds(List.of(1L));
         scopeViolations = validator.validate(dataScopeCommand);
         Assertions.assertTrue(scopeViolations.isEmpty());
     }
@@ -278,7 +298,7 @@ public class CommandValidationTest {
         updateCommand.setMenuName("用户管理");
         updateCommand.setParentId(0L);
         updateCommand.setIsButton(false);
-        updateCommand.setMenuId(null);
+        updateCommand.setMenuId(-1L);
         Set<ConstraintViolation<UpdateMenuCommand>> updateViolations = validator.validate(updateCommand);
         Assertions.assertTrue(updateViolations.stream().anyMatch(v -> "menuId".equals(v.getPropertyPath().toString())));
 
@@ -307,7 +327,7 @@ public class CommandValidationTest {
         updateCommand.setNoticeTitle("系统维护公告");
         updateCommand.setNoticeType("1");
         updateCommand.setNoticeContent("系统将于今晚维护升级");
-        updateCommand.setNoticeId(null);
+        updateCommand.setNoticeId(-1L);
         Set<ConstraintViolation<NoticeUpdateCommand>> updateViolations = validator.validate(updateCommand);
         Assertions.assertTrue(updateViolations.stream().anyMatch(v -> "noticeId".equals(v.getPropertyPath().toString())));
 
@@ -322,11 +342,13 @@ public class CommandValidationTest {
         ConfigUpdateCommand command = new ConfigUpdateCommand();
         Set<ConstraintViolation<ConfigUpdateCommand>> violations = validator.validate(command);
         Assertions.assertFalse(violations.isEmpty());
+
+        command.setConfigId(-1L);
+        command.setConfigValue("true");
+        violations = validator.validate(command);
         Assertions.assertTrue(violations.stream().anyMatch(v -> "configId".equals(v.getPropertyPath().toString())));
-        Assertions.assertTrue(violations.stream().anyMatch(v -> "configValue".equals(v.getPropertyPath().toString())));
 
         command.setConfigId(1L);
-        command.setConfigValue("true");
         violations = validator.validate(command);
         Assertions.assertTrue(violations.isEmpty());
     }

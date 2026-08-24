@@ -12,8 +12,7 @@ import lombok.Data;
 @Data
 public class UpdateDataScopeCommand {
 
-    @NotNull
-    @Positive
+    @Positive(message = "角色ID必须大于0")
     private Long roleId;
 
     @NotNull

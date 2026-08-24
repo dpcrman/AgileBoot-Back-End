@@ -100,7 +100,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@permission.has('system:notice:edit')")
     @AccessLog(title = "通知公告", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{noticeId}")
-    public ResponseDTO<Void> edit(@PathVariable("noticeId") Long noticeId, @Validated @RequestBody NoticeUpdateCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("noticeId") @NotNull @Positive Long noticeId, @Validated @RequestBody NoticeUpdateCommand updateCommand) {
         updateCommand.setNoticeId(noticeId);
         noticeApplicationService.updateNotice(updateCommand);
         return ResponseDTO.ok();

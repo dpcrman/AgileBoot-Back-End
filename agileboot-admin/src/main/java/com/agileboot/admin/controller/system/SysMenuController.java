@@ -99,7 +99,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@permission.has('system:menu:edit')")
     @AccessLog(title = "菜单管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{menuId}")
-    public ResponseDTO<Void> edit(@PathVariable("menuId") Long menuId, @Validated @RequestBody UpdateMenuCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("menuId") @NotNull @PositiveOrZero Long menuId, @Validated @RequestBody UpdateMenuCommand updateCommand) {
         updateCommand.setMenuId(menuId);
         menuApplicationService.updateMenu(updateCommand);
         return ResponseDTO.ok();
@@ -112,7 +112,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@permission.has('system:menu:remove')")
     @AccessLog(title = "菜单管理", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping("/{menuId}")
-    public ResponseDTO<Void> remove(@PathVariable("menuId") Long menuId) {
+    public ResponseDTO<Void> remove(@PathVariable("menuId") @NotNull @PositiveOrZero Long menuId) {
         menuApplicationService.remove(menuId);
         return ResponseDTO.ok();
     }

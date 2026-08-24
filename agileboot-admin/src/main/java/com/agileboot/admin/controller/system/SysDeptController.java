@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -57,7 +58,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "部门详情")
     @PreAuthorize("@permission.has('system:dept:query')")
     @GetMapping(value = "/dept/{deptId}")
-    public ResponseDTO<DeptDTO> getInfo(@PathVariable("deptId") Long deptId) {
+    public ResponseDTO<DeptDTO> getInfo(@PathVariable("deptId") @NotNull @Positive Long deptId) {
         DeptDTO dept = deptApplicationService.getDeptInfo(deptId);
         return ResponseDTO.ok(dept);
     }
@@ -88,10 +89,10 @@ public class SysDeptController extends BaseController {
      * 修改部门
      */
     @Operation(summary = "修改部门")
-    @PreAuthorize("@permission.has('system:dept:edit') AND @dataScope.checkDeptId(#updateCommand.deptId)")
+    @PreAuthorize("@permission.has('system:dept:edit') AND @dataScope.checkDeptId(#deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/dept/{deptId}")
-    public ResponseDTO<Void> edit(@PathVariable("deptId") Long deptId, @Validated @RequestBody UpdateDeptCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("deptId") @NotNull @Positive Long deptId, @Validated @RequestBody UpdateDeptCommand updateCommand) {
         updateCommand.setDeptId(deptId);
         deptApplicationService.updateDept(updateCommand);
         return ResponseDTO.ok();
@@ -104,7 +105,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@permission.has('system:dept:remove') AND @dataScope.checkDeptId(#deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping("/dept/{deptId}")
-    public ResponseDTO<Void> remove(@PathVariable("deptId") @NotNull Long deptId) {
+    public ResponseDTO<Void> remove(@PathVariable("deptId") @NotNull @Positive Long deptId) {
         deptApplicationService.removeDept(deptId);
         return ResponseDTO.ok();
     }

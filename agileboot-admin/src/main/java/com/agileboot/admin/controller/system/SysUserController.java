@@ -23,6 +23,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -118,10 +120,11 @@ public class SysUserController extends BaseController {
      * 修改用户
      */
     @Operation(summary = "修改用户")
-    @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#command.userId)")
+    @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}")
-    public ResponseDTO<Void> edit(@Validated @RequestBody UpdateUserCommand command) {
+    public ResponseDTO<Void> edit(@PathVariable("userId") @NotNull @Positive Long userId, @Validated @RequestBody UpdateUserCommand command) {
+        command.setUserId(userId);
         userApplicationService.updateUser(command);
         return ResponseDTO.ok();
     }
@@ -147,7 +150,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:resetPwd') AND @dataScope.checkUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/password")
-    public ResponseDTO<Void> resetPassword(@PathVariable("userId") Long userId, @Validated @RequestBody ResetPasswordCommand command) {
+    public ResponseDTO<Void> resetPassword(@PathVariable("userId") @NotNull @Positive Long userId, @Validated @RequestBody ResetPasswordCommand command) {
         command.setUserId(userId);
         userApplicationService.resetUserPassword(command);
         return ResponseDTO.ok();
@@ -157,10 +160,10 @@ public class SysUserController extends BaseController {
      * 状态修改
      */
     @Operation(summary = "修改用户状态")
-    @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#command.userId)")
+    @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/status")
-    public ResponseDTO<Void> changeStatus(@PathVariable("userId") Long userId, @Validated @RequestBody ChangeStatusCommand command) {
+    public ResponseDTO<Void> changeStatus(@PathVariable("userId") @NotNull @Positive Long userId, @Validated @RequestBody ChangeStatusCommand command) {
         command.setUserId(userId);
         userApplicationService.changeUserStatus(command);
         return ResponseDTO.ok();

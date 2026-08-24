@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class ChangeStatusCommand {
 
-    @NotNull(message = "用户ID不能为空")
     @Positive(message = "用户ID必须大于0")
     private Long userId;
 

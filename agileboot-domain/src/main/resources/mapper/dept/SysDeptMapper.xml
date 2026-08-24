@@ -11,7 +11,7 @@
         </if>
         AND (
             parent_id = #{deptId}
-            OR find_in_set(#{deptId}, ancestors)
+            OR CONCAT(',', ancestors, ',') LIKE CONCAT('%,', #{deptId}, ',%')
         )
     </select>
 
@@ -20,7 +20,7 @@
         FROM sys_dept
         WHERE deleted = 0
           AND dept_id = #{childId}
-          AND find_in_set(#{parentId}, ancestors)
+          AND CONCAT(',', ancestors, ',') LIKE CONCAT('%,', #{parentId}, ',%')
     </select>
 
 </mapper>

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateStatusCommand {
 
-    @NotNull(message = "角色ID不能为空")
     @Positive(message = "角色ID必须大于0")
     private Long roleId;
 
