@@ -265,13 +265,19 @@ public class CommandValidationTest {
         Set<ConstraintViolation<AddMenuCommand>> violations = validator.validate(addCommand);
         Assertions.assertFalse(violations.isEmpty());
         Assertions.assertTrue(violations.stream().anyMatch(v -> "menuName".equals(v.getPropertyPath().toString())));
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "parentId".equals(v.getPropertyPath().toString())));
+        Assertions.assertTrue(violations.stream().anyMatch(v -> "isButton".equals(v.getPropertyPath().toString())));
 
         addCommand.setMenuName("用户管理");
+        addCommand.setParentId(0L);
+        addCommand.setIsButton(false);
         violations = validator.validate(addCommand);
         Assertions.assertTrue(violations.isEmpty());
 
         UpdateMenuCommand updateCommand = new UpdateMenuCommand();
         updateCommand.setMenuName("用户管理");
+        updateCommand.setParentId(0L);
+        updateCommand.setIsButton(false);
         updateCommand.setMenuId(null);
         Set<ConstraintViolation<UpdateMenuCommand>> updateViolations = validator.validate(updateCommand);
         Assertions.assertTrue(updateViolations.stream().anyMatch(v -> "menuId".equals(v.getPropertyPath().toString())));

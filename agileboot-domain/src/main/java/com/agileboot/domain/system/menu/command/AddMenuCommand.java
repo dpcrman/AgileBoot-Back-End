@@ -3,6 +3,7 @@ package com.agileboot.domain.system.menu.command;
 import com.agileboot.domain.system.menu.dto.MetaDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
