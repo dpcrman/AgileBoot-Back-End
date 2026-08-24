@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,7 +48,7 @@ public class FileController {
      */
     @Operation(summary = "下载文件")
     @GetMapping("/download")
-    public ResponseEntity<byte[]> fileDownload(String fileName, HttpServletResponse response) {
+    public ResponseEntity<byte[]> fileDownload(@RequestParam("fileName") String fileName, HttpServletResponse response) {
         try {
             if (!FileUploadUtils.isAllowDownload(fileName)) {
                 // 返回类型是ResponseEntity 不能捕获异常， 需要手动将错误填到 ResponseEntity
@@ -73,7 +74,7 @@ public class FileController {
      */
     @Operation(summary = "单个上传文件")
     @PostMapping("/upload")
-    public ResponseDTO<UploadDTO> uploadFile(MultipartFile file) {
+    public ResponseDTO<UploadDTO> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file == null) {
             throw new ApiException(ErrorCode.Business.UPLOAD_FILE_IS_EMPTY);
         }
@@ -101,7 +102,7 @@ public class FileController {
      */
     @Operation(summary = "多个上传文件")
     @PostMapping("/uploads")
-    public ResponseDTO<List<UploadDTO>> uploadFiles(List<MultipartFile> files) {
+    public ResponseDTO<List<UploadDTO>> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
         if (CollUtil.isEmpty(files)) {
             throw new ApiException(ErrorCode.Business.UPLOAD_FILE_IS_EMPTY);
         }

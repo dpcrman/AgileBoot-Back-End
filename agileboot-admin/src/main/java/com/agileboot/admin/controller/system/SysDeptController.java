@@ -57,7 +57,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "部门详情")
     @PreAuthorize("@permission.has('system:dept:query')")
     @GetMapping(value = "/dept/{deptId}")
-    public ResponseDTO<DeptDTO> getInfo(@PathVariable Long deptId) {
+    public ResponseDTO<DeptDTO> getInfo(@PathVariable("deptId") Long deptId) {
         DeptDTO dept = deptApplicationService.getDeptInfo(deptId);
         return ResponseDTO.ok(dept);
     }
@@ -104,7 +104,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@permission.has('system:dept:remove') AND @dataScope.checkDeptId(#deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping("/dept/{deptId}")
-    public ResponseDTO<Void> remove(@PathVariable @NotNull Long deptId) {
+    public ResponseDTO<Void> remove(@PathVariable("deptId") @NotNull Long deptId) {
         deptApplicationService.removeDept(deptId);
         return ResponseDTO.ok();
     }

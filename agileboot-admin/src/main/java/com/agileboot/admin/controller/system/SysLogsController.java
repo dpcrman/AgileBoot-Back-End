@@ -63,7 +63,7 @@ public class SysLogsController extends BaseController {
     @PreAuthorize("@permission.has('monitor:logininfor:remove')")
     @AccessLog(title = "登录日志", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping("/loginLogs")
-    public ResponseDTO<Void> removeLoginInfos(@RequestParam @NotNull @NotEmpty List<Long> ids) {
+    public ResponseDTO<Void> removeLoginInfos(@RequestParam("ids") @NotNull @NotEmpty List<Long> ids) {
         logApplicationService.deleteLoginInfo(new BulkOperationCommand<>(ids));
         return ResponseDTO.ok();
     }
@@ -111,7 +111,7 @@ public class SysLogsController extends BaseController {
     @AccessLog(title = "操作日志", businessType = BusinessTypeEnum.DELETE)
     @PreAuthorize("@permission.has('monitor:operlog:remove')")
     @DeleteMapping("/operationLogs")
-    public ResponseDTO<Void> removeOperationLogs(@RequestParam List<Long> operationIds) {
+    public ResponseDTO<Void> removeOperationLogs(@RequestParam("operationIds") List<Long> operationIds) {
         logApplicationService.deleteOperationLog(new BulkOperationCommand<>(operationIds));
         return ResponseDTO.ok();
     }

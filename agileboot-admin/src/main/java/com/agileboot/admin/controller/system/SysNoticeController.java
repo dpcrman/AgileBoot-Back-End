@@ -76,7 +76,7 @@ public class SysNoticeController extends BaseController {
     @Operation(summary = "公告详情")
     @PreAuthorize("@permission.has('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
-    public ResponseDTO<NoticeDTO> getInfo(@PathVariable @NotNull @Positive Long noticeId) {
+    public ResponseDTO<NoticeDTO> getInfo(@PathVariable("noticeId") @NotNull @Positive Long noticeId) {
         return ResponseDTO.ok(noticeApplicationService.getNoticeInfo(noticeId));
     }
 
@@ -100,7 +100,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@permission.has('system:notice:edit')")
     @AccessLog(title = "通知公告", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{noticeId}")
-    public ResponseDTO<Void> edit(@PathVariable Long noticeId, @RequestBody NoticeUpdateCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("noticeId") Long noticeId, @RequestBody NoticeUpdateCommand updateCommand) {
         updateCommand.setNoticeId(noticeId);
         noticeApplicationService.updateNotice(updateCommand);
         return ResponseDTO.ok();
@@ -113,7 +113,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@permission.has('system:notice:remove')")
     @AccessLog(title = "通知公告", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping
-    public ResponseDTO<Void> remove(@RequestParam List<Integer> noticeIds) {
+    public ResponseDTO<Void> remove(@RequestParam("noticeIds") List<Integer> noticeIds) {
         noticeApplicationService.deleteNotice(new BulkOperationCommand<>(noticeIds));
         return ResponseDTO.ok();
     }

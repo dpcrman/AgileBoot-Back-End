@@ -78,7 +78,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "职位详情")
     @PreAuthorize("@permission.has('system:post:query')")
     @GetMapping(value = "/{postId}")
-    public ResponseDTO<PostDTO> getInfo(@PathVariable Long postId) {
+    public ResponseDTO<PostDTO> getInfo(@PathVariable("postId") Long postId) {
         PostDTO post = postApplicationService.getPostInfo(postId);
         return ResponseDTO.ok(post);
     }
@@ -114,7 +114,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@permission.has('system:post:remove')")
     @AccessLog(title = "岗位管理", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping
-    public ResponseDTO<Void> remove(@RequestParam @NotNull @NotEmpty List<Long> ids) {
+    public ResponseDTO<Void> remove(@RequestParam("ids") @NotNull @NotEmpty List<Long> ids) {
         postApplicationService.deletePost(new BulkOperationCommand<>(ids));
         return ResponseDTO.ok();
     }

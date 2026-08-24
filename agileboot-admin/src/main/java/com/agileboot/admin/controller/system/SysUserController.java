@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,7 +73,7 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.IMPORT)
     @PreAuthorize("@permission.has('system:user:import')")
     @PostMapping("/excel")
-    public ResponseDTO<Void> importUserByExcel(MultipartFile file) {
+    public ResponseDTO<Void> importUserByExcel(@RequestParam("file") MultipartFile file) {
         List<AddUserCommand> commands = CustomExcelUtil.readFromRequest(AddUserCommand.class, file);
 
         for (AddUserCommand command : commands) {
@@ -132,7 +133,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:remove') AND @dataScope.checkUserIds(#userIds)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.DELETE)
     @DeleteMapping("/{userIds}")
-    public ResponseDTO<Void> remove(@PathVariable List<Long> userIds) {
+    public ResponseDTO<Void> remove(@PathVariable("userIds") List<Long> userIds) {
         BulkOperationCommand<Long> bulkDeleteCommand = new BulkOperationCommand<>(userIds);
         SystemLoginUser loginUser = AuthenticationUtils.getSystemLoginUser();
         userApplicationService.deleteUsers(loginUser, bulkDeleteCommand);
@@ -146,7 +147,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:resetPwd') AND @dataScope.checkUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/password")
-    public ResponseDTO<Void> resetPassword(@PathVariable Long userId, @RequestBody ResetPasswordCommand command) {
+    public ResponseDTO<Void> resetPassword(@PathVariable("userId") Long userId, @RequestBody ResetPasswordCommand command) {
         command.setUserId(userId);
         userApplicationService.resetUserPassword(command);
         return ResponseDTO.ok();
@@ -159,7 +160,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#command.userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/status")
-    public ResponseDTO<Void> changeStatus(@PathVariable Long userId, @RequestBody ChangeStatusCommand command) {
+    public ResponseDTO<Void> changeStatus(@PathVariable("userId") Long userId, @RequestBody ChangeStatusCommand command) {
         command.setUserId(userId);
         userApplicationService.changeUserStatus(command);
         return ResponseDTO.ok();

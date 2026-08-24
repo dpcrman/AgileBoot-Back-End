@@ -61,7 +61,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "菜单详情")
     @PreAuthorize("@permission.has('system:menu:query')")
     @GetMapping(value = "/{menuId}")
-    public ResponseDTO<MenuDetailDTO> menuInfo(@PathVariable @NotNull @PositiveOrZero Long menuId) {
+    public ResponseDTO<MenuDetailDTO> menuInfo(@PathVariable("menuId") @NotNull @PositiveOrZero Long menuId) {
         MenuDetailDTO menu = menuApplicationService.getMenuInfo(menuId);
         return ResponseDTO.ok(menu);
     }
