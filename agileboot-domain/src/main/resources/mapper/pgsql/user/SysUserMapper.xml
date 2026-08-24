@@ -2,28 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.agileboot.domain.system.user.db.SysUserMapper">
 
+    <!-- PGSQL 优化：使用 INNER JOIN 代替退化的 LEFT JOIN -->
     <select id="getRolesByUserId" resultType="com.agileboot.domain.system.role.db.SysRoleEntity">
         SELECT DISTINCT r.*
         FROM sys_role r
-        LEFT JOIN sys_user u ON u.role_id = r.role_id
+        INNER JOIN sys_user u ON u.role_id = r.role_id
         WHERE r.deleted = 0
           AND u.user_id = #{userId}
     </select>
 
+    <!-- PGSQL 优化：使用 INNER JOIN 代替退化的 LEFT JOIN -->
     <select id="getPostsByUserId" resultType="com.agileboot.domain.system.post.db.SysPostEntity">
         SELECT p.*
         FROM sys_post p
-        LEFT JOIN sys_user u ON p.post_id = u.post_id
+        INNER JOIN sys_user u ON p.post_id = u.post_id
         WHERE u.user_id = #{userId}
           AND p.deleted = 0
     </select>
 
+    <!-- PGSQL 优化：使用 INNER JOIN 提升连接效率 -->
     <select id="getMenuPermsByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.permission
         FROM sys_menu m
-        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
-        LEFT JOIN sys_user u ON rm.role_id = u.role_id
-        LEFT JOIN sys_role r ON r.role_id = u.role_id
+        INNER JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        INNER JOIN sys_user u ON rm.role_id = u.role_id
+        INNER JOIN sys_role r ON r.role_id = u.role_id
         WHERE m.status = 1 AND m.deleted = 0
           AND r.status = 1 AND r.deleted = 0
           AND u.user_id = #{userId}

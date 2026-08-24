@@ -2,24 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.agileboot.domain.system.menu.db.SysMenuMapper">
 
+    <!-- PGSQL 优化：使用显式 INNER JOIN 提升规划器执行效率，并按 parent_id 排序 -->
     <select id="selectMenuListByUserId" resultType="com.agileboot.domain.system.menu.db.SysMenuEntity">
         SELECT DISTINCT m.*
         FROM sys_menu m
-        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
-        LEFT JOIN sys_user u ON rm.role_id = u.role_id
+        INNER JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        INNER JOIN sys_user u ON rm.role_id = u.role_id
         WHERE u.user_id = #{userId}
           AND m.status = 1
           AND m.deleted = 0
         ORDER BY m.parent_id
     </select>
 
+    <!-- PGSQL 优化：消除 DISTINCT 与 GROUP BY 双重去重冗余，改用 sys_role_menu 驱动表 INNER JOIN -->
     <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
-        SELECT DISTINCT m.menu_id
-        FROM sys_menu m
-        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        SELECT DISTINCT rm.menu_id
+        FROM sys_role_menu rm
+        INNER JOIN sys_menu m ON rm.menu_id = m.menu_id
         WHERE rm.role_id = #{roleId}
           AND m.deleted = 0
-        GROUP BY m.menu_id
     </select>
 
 </mapper>

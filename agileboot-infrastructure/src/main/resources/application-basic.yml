@@ -18,6 +18,8 @@ agileboot:
   # 是否检查 i18n 资源文件（messages.properties）是否都有对应的键值对
   checkI18nKey: false
   traceRequestIdKey: AG-RequestId
+  # 数据库类型 (用于动态加载对应方言的 Mapper XML 目录)
+  database-type: pgsql
 
 
 
@@ -99,7 +101,7 @@ mybatis-plus:
     # 搜索指定包别名 使用简短的类型名称来代替完整的类型名称
 #    typeAliasesPackage: com.agileboot.orm.*
     # 配置mapper的扫描，找到所有的mapper.xml映射文件
-    mapperLocations: classpath*:mapper/**/*Mapper.xml
+    mapperLocations: classpath*:mapper/${agileboot.database-type:pgsql}/**/*Mapper.xml
     # 加载全局的配置文件
     configuration:
       cacheEnabled: true

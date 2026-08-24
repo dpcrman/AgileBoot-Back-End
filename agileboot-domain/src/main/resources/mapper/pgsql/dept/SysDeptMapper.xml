@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.agileboot.domain.system.dept.db.SysDeptMapper">
+
+    <!-- PGSQL 优化：使用原生 EXISTS 代替 COUNT(1) > 0，利用索引短路退出，避免全量聚合扫描 -->
+    <select id="hasChildrenDept" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM sys_dept
+            WHERE deleted = 0
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            AND (
+                parent_id = #{deptId}
+                OR CONCAT(',', ancestors, ',') LIKE CONCAT('%,', #{deptId}, ',%')
+            )
+        )
+    </select>
+
+    <!-- PGSQL 优化：使用原生 EXISTS 快速判断祖先关系 -->
+    <select id="isChildOfTheDept" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM sys_dept
+            WHERE deleted = 0
+              AND dept_id = #{childId}
+              AND CONCAT(',', ancestors, ',') LIKE CONCAT('%,', #{parentId}, ',%')
+        )
+    </select>
+
+</mapper>
