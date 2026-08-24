@@ -27,11 +27,4 @@ public class MyBatisConfig {
         return interceptor;
     }
 
-    @Bean
-    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(dataSource);
-        return transactionManager;
-    }
-
 }

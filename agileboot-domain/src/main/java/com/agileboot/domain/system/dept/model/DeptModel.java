@@ -38,7 +38,7 @@ public class DeptModel extends SysDeptEntity {
         this.setLeaderName(addCommand.getLeaderName());
         this.setPhone(addCommand.getPhone());
         this.setEmail(addCommand.getEmail());
-        this.setStatus(addCommand.getStatus());
+        this.setStatus(addCommand.getStatus() != null ? addCommand.getStatus() : StatusEnum.ENABLE.getValue());
     }
 
     public void loadUpdateCommand(UpdateDeptCommand updateCommand) {

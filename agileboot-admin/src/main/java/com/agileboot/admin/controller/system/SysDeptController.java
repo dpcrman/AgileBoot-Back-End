@@ -79,7 +79,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@permission.has('system:dept:add')")
     @AccessLog(title = "部门管理", businessType = BusinessTypeEnum.ADD)
     @PostMapping("/dept")
-    public ResponseDTO<Void> add(@RequestBody AddDeptCommand addCommand) {
+    public ResponseDTO<Void> add(@Validated @RequestBody AddDeptCommand addCommand) {
         deptApplicationService.addDept(addCommand);
         return ResponseDTO.ok();
     }
@@ -91,7 +91,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@permission.has('system:dept:edit') AND @dataScope.checkDeptId(#updateCommand.deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/dept/{deptId}")
-    public ResponseDTO<Void> edit(@PathVariable("deptId")Long deptId, @RequestBody UpdateDeptCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("deptId") Long deptId, @Validated @RequestBody UpdateDeptCommand updateCommand) {
         updateCommand.setDeptId(deptId);
         deptApplicationService.updateDept(updateCommand);
         return ResponseDTO.ok();

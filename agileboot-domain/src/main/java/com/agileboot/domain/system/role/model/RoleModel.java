@@ -51,6 +51,9 @@ public class RoleModel extends SysRoleEntity {
     public void loadAddCommand(AddRoleCommand command) {
         if (command != null) {
             BeanUtil.copyProperties(command, this, "roleId");
+            if (this.getStatus() == null) {
+                this.setStatus(StatusEnum.ENABLE.getValue());
+            }
         }
     }
 

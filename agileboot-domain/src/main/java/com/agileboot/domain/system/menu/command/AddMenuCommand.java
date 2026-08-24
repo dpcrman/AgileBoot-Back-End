@@ -12,7 +12,10 @@ import lombok.Data;
 @Data
 public class AddMenuCommand {
 
+    @NotNull(message = "父级菜单ID不能为空")
+    @PositiveOrZero(message = "父级菜单ID必须大于等于0")
     private Long parentId;
+
     @NotBlank(message = "菜单名称不能为空")
     @Size(max = 50, message = "菜单名称长度不能超过50个字符")
     private String menuName;
@@ -27,6 +30,7 @@ public class AddMenuCommand {
     private Integer status;
     private Integer menuType;
 
+    @NotNull(message = "是否按钮不能为空")
     private Boolean isButton;
 
     @Size(max = 100, message = "权限标识长度不能超过100个字符")

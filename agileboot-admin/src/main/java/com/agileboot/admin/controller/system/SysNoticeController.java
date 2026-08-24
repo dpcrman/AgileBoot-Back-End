@@ -88,7 +88,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@permission.has('system:notice:add')")
     @AccessLog(title = "通知公告", businessType = BusinessTypeEnum.ADD)
     @PostMapping
-    public ResponseDTO<Void> add(@RequestBody NoticeAddCommand addCommand) {
+    public ResponseDTO<Void> add(@Validated @RequestBody NoticeAddCommand addCommand) {
         noticeApplicationService.addNotice(addCommand);
         return ResponseDTO.ok();
     }
@@ -100,7 +100,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@permission.has('system:notice:edit')")
     @AccessLog(title = "通知公告", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{noticeId}")
-    public ResponseDTO<Void> edit(@PathVariable("noticeId") Long noticeId, @RequestBody NoticeUpdateCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("noticeId") Long noticeId, @Validated @RequestBody NoticeUpdateCommand updateCommand) {
         updateCommand.setNoticeId(noticeId);
         noticeApplicationService.updateNotice(updateCommand);
         return ResponseDTO.ok();

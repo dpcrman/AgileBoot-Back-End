@@ -28,6 +28,9 @@ public class NoticeModel extends SysNoticeEntity {
     public void loadAddCommand(NoticeAddCommand command) {
         if (command != null) {
             BeanUtil.copyProperties(command, this, "noticeId");
+            if (this.getStatus() == null) {
+                this.setStatus(StatusEnum.ENABLE.getValue());
+            }
         }
     }
 

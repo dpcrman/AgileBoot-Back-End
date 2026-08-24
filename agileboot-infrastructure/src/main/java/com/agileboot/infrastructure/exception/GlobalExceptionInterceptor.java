@@ -8,6 +8,8 @@ import com.agileboot.common.exception.error.ErrorCode.Client;
 import com.agileboot.common.exception.error.ErrorCode.Internal;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
@@ -98,7 +100,22 @@ public class GlobalExceptionInterceptor {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseDTO<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
-        String message = e.getBindingResult().getFieldError().getDefaultMessage();
+        String message = e.getBindingResult().getFieldError() != null
+            ? e.getBindingResult().getFieldError().getDefaultMessage()
+            : e.getAllErrors().get(0).getDefaultMessage();
+        return ResponseDTO.fail(new ApiException(ErrorCode.Client.COMMON_REQUEST_PARAMETERS_INVALID, message));
+    }
+
+    /**
+     * 自定义验证异常 (路径/查询参数约束校验)
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseDTO<?> handleConstraintViolationException(ConstraintViolationException e) {
+        log.error(e.getMessage(), e);
+        String message = e.getConstraintViolations().stream()
+            .map(ConstraintViolation::getMessage)
+            .findFirst()
+            .orElse(e.getMessage());
         return ResponseDTO.fail(new ApiException(ErrorCode.Client.COMMON_REQUEST_PARAMETERS_INVALID, message));
     }
 

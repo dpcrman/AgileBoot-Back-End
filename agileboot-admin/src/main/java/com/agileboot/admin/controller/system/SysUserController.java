@@ -147,7 +147,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:resetPwd') AND @dataScope.checkUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/password")
-    public ResponseDTO<Void> resetPassword(@PathVariable("userId") Long userId, @RequestBody ResetPasswordCommand command) {
+    public ResponseDTO<Void> resetPassword(@PathVariable("userId") Long userId, @Validated @RequestBody ResetPasswordCommand command) {
         command.setUserId(userId);
         userApplicationService.resetUserPassword(command);
         return ResponseDTO.ok();
@@ -160,7 +160,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@permission.has('system:user:edit') AND @dataScope.checkUserId(#command.userId)")
     @AccessLog(title = "用户管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{userId}/status")
-    public ResponseDTO<Void> changeStatus(@PathVariable("userId") Long userId, @RequestBody ChangeStatusCommand command) {
+    public ResponseDTO<Void> changeStatus(@PathVariable("userId") Long userId, @Validated @RequestBody ChangeStatusCommand command) {
         command.setUserId(userId);
         userApplicationService.changeUserStatus(command);
         return ResponseDTO.ok();

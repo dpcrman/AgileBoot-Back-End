@@ -90,7 +90,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@permission.has('system:post:add')")
     @AccessLog(title = "岗位管理", businessType = BusinessTypeEnum.ADD)
     @PostMapping
-    public ResponseDTO<Void> add(@RequestBody AddPostCommand addCommand) {
+    public ResponseDTO<Void> add(@Validated @RequestBody AddPostCommand addCommand) {
         postApplicationService.addPost(addCommand);
         return ResponseDTO.ok();
     }
@@ -102,7 +102,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@permission.has('system:post:edit')")
     @AccessLog(title = "岗位管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping
-    public ResponseDTO<Void> edit(@RequestBody UpdatePostCommand updateCommand) {
+    public ResponseDTO<Void> edit(@Validated @RequestBody UpdatePostCommand updateCommand) {
         postApplicationService.updatePost(updateCommand);
         return ResponseDTO.ok();
     }

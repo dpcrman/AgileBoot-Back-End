@@ -87,7 +87,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@permission.has('system:menu:add')")
     @AccessLog(title = "菜单管理", businessType = BusinessTypeEnum.ADD)
     @PostMapping
-    public ResponseDTO<Void> add(@RequestBody AddMenuCommand addCommand) {
+    public ResponseDTO<Void> add(@Validated @RequestBody AddMenuCommand addCommand) {
         menuApplicationService.addMenu(addCommand);
         return ResponseDTO.ok();
     }
@@ -99,7 +99,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@permission.has('system:menu:edit')")
     @AccessLog(title = "菜单管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{menuId}")
-    public ResponseDTO<Void> edit(@PathVariable("menuId") Long menuId, @RequestBody UpdateMenuCommand updateCommand) {
+    public ResponseDTO<Void> edit(@PathVariable("menuId") Long menuId, @Validated @RequestBody UpdateMenuCommand updateCommand) {
         updateCommand.setMenuId(menuId);
         menuApplicationService.updateMenu(updateCommand);
         return ResponseDTO.ok();

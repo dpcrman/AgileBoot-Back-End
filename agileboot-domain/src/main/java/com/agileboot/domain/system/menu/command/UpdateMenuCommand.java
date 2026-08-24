@@ -1,6 +1,7 @@
 package com.agileboot.domain.system.menu.command;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +12,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class UpdateMenuCommand extends AddMenuCommand {
 
-    @NotNull
+    @NotNull(message = "菜单ID不能为空")
+    @PositiveOrZero
     private Long menuId;
 
 }
+

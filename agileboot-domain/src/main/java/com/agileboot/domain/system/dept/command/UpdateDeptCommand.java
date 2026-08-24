@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.dept.command;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,8 +12,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class UpdateDeptCommand extends AddDeptCommand {
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "部门ID不能为空")
+    @Positive(message = "部门ID必须大于0")
     private Long deptId;
 
 }
+

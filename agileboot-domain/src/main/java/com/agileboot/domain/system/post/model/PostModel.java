@@ -1,6 +1,7 @@
 package com.agileboot.domain.system.post.model;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.agileboot.common.enums.common.StatusEnum;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.post.command.AddPostCommand;
@@ -31,6 +32,9 @@ public class PostModel extends SysPostEntity {
     public void loadFromAddCommand(AddPostCommand addCommand) {
         if (addCommand != null) {
             BeanUtil.copyProperties(addCommand, this, "postId");
+            if (this.getStatus() == null) {
+                this.setStatus(StatusEnum.ENABLE.getValue());
+            }
         }
     }
 

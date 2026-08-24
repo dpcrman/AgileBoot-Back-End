@@ -8,6 +8,7 @@ import com.agileboot.common.utils.jackson.JacksonUtil;
 import com.agileboot.domain.system.menu.command.AddMenuCommand;
 import com.agileboot.domain.system.menu.command.UpdateMenuCommand;
 import com.agileboot.common.enums.common.MenuTypeEnum;
+import com.agileboot.common.enums.common.StatusEnum;
 import com.agileboot.domain.system.menu.db.SysMenuEntity;
 import com.agileboot.domain.system.menu.db.SysMenuService;
 import java.util.Objects;
@@ -36,8 +37,16 @@ public class MenuModel extends SysMenuEntity {
         if (command != null) {
             BeanUtil.copyProperties(command, this, "menuId");
 
-            String metaInfo = JacksonUtil.to(command.getMeta());
-            this.setMetaInfo(metaInfo);
+            if (command.getMeta() != null) {
+                String metaInfo = JacksonUtil.to(command.getMeta());
+                this.setMetaInfo(metaInfo);
+            } else if (this.getMetaInfo() == null) {
+                this.setMetaInfo("{}");
+            }
+
+            if (this.getStatus() == null) {
+                this.setStatus(StatusEnum.ENABLE.getValue());
+            }
         }
     }
 

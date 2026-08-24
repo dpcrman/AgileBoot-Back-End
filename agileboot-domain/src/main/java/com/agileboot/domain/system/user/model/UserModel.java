@@ -3,6 +3,7 @@ package com.agileboot.domain.system.user.model;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.config.AgileBootConfig;
+import com.agileboot.common.enums.common.UserStatusEnum;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.exception.error.ErrorCode.Business;
@@ -58,6 +59,9 @@ public class UserModel extends SysUserEntity {
     public void loadAddUserCommand(AddUserCommand command) {
         if (command != null) {
             BeanUtil.copyProperties(command, this, "userId");
+            if (this.getStatus() == null) {
+                this.setStatus(UserStatusEnum.NORMAL.getValue());
+            }
         }
     }
 

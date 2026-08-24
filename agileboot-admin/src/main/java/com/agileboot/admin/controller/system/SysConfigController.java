@@ -68,7 +68,7 @@ public class SysConfigController extends BaseController {
     @AccessLog(title = "参数管理", businessType = BusinessTypeEnum.MODIFY)
     @Operation(summary = "配置修改", description = "配置修改")
     @PutMapping(value = "/config/{configId}")
-    public ResponseDTO<Void> edit(@NotNull @Positive @PathVariable("configId") Long configId, @RequestBody ConfigUpdateCommand config) {
+    public ResponseDTO<Void> edit(@NotNull @Positive @PathVariable("configId") Long configId, @Validated @RequestBody ConfigUpdateCommand config) {
         config.setConfigId(configId);
         configApplicationService.updateConfig(config);
         return ResponseDTO.ok();

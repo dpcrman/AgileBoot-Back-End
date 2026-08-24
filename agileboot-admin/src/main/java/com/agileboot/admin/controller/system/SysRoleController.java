@@ -82,7 +82,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@permission.has('system:role:add')")
     @AccessLog(title = "角色管理", businessType = BusinessTypeEnum.ADD)
     @PostMapping
-    public ResponseDTO<Void> add(@RequestBody AddRoleCommand addCommand) {
+    public ResponseDTO<Void> add(@Validated @RequestBody AddRoleCommand addCommand) {
         roleApplicationService.addRole(addCommand);
         return ResponseDTO.ok();
     }
@@ -119,7 +119,7 @@ public class SysRoleController extends BaseController {
     @AccessLog(title = "角色管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{roleId}/dataScope")
     public ResponseDTO<Void> dataScope(@PathVariable("roleId") Long roleId,
-        @RequestBody UpdateDataScopeCommand command) {
+        @Validated @RequestBody UpdateDataScopeCommand command) {
         command.setRoleId(roleId);
 
         roleApplicationService.updateDataScope(command);
@@ -134,7 +134,7 @@ public class SysRoleController extends BaseController {
     @AccessLog(title = "角色管理", businessType = BusinessTypeEnum.MODIFY)
     @PutMapping("/{roleId}/status")
     public ResponseDTO<Void> changeStatus(@PathVariable("roleId") Long roleId,
-        @RequestBody UpdateStatusCommand command) {
+        @Validated @RequestBody UpdateStatusCommand command) {
         command.setRoleId(roleId);
 
         roleApplicationService.updateStatus(command);

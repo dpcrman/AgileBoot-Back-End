@@ -15,6 +15,7 @@ import com.agileboot.infrastructure.user.web.SystemLoginUser;
 import com.agileboot.domain.system.user.db.SysUserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class UserModelTest {
 
@@ -163,5 +164,19 @@ class UserModelTest {
         userModel.resetPassword("admin456");
 
         Assertions.assertTrue(AuthenticationUtils.matchesPassword("admin456", userModel.getPassword()));
+    }
+
+    @Test
+    void testCheckFieldRelatedEntityExist() {
+        UserModel userModel = userModelFactory.create();
+        userModel.setPostId(10L);
+        userModel.setDeptId(20L);
+        userModel.setRoleId(30L);
+
+        Assertions.assertDoesNotThrow(userModel::checkFieldRelatedEntityExist);
+
+        Mockito.verify(postModelFactory).loadById(10L);
+        Mockito.verify(deptModelFactory).loadById(20L);
+        Mockito.verify(roleModelFactory).loadById(30L);
     }
 }
