@@ -52,4 +52,12 @@ class SysRoleServiceImplTest {
         Assertions.assertFalse(unassignedRole);
     }
 
+    @Test
+    @Rollback
+    void testGetMenuListByRoleId() {
+        var menuList = roleService.getMenuListByRoleId(2L);
+        Assertions.assertNotNull(menuList);
+        Assertions.assertFalse(menuList.isEmpty());
+    }
+
 }
